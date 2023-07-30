@@ -1,0 +1,89 @@
+services:
+
+# EAST REGION  
+  zookeeper_east:
+    build:
+      context: ./kafka-slim
+      dockerfile: Dockerfile
+    command: ["zookeeper"]
+
+  kafka_east:
+    build:
+      context: ./kafka-slim
+      dockerfile: Dockerfile
+    command: ["kafka"]
+    volumes:
+      - ./kafka_east_conf/server.properties:/opt/kafka/config/server.properties
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper_east:2181
+      # - KAFKA_CREATE_TOPICS=logs:1:1
+    depends_on:
+      - zookeeper_east
+
+  producer_east:
+    build:
+      context: ./kafka-client
+      dockerfile: Dockerfile
+    deploy:
+      replicas: 1
+    environment:
+      BOOTSTRAP_SERVER: kafka_east:9092
+      TOPIC: logs
+    volumes:
+      - ./kafka-client/Producer.py:/app/Producer.py
+    depends_on:
+    - kafka_east
+
+# WEST REGION  
+  zookeeper_west:
+    build:
+      context: ./kafka-slim
+      dockerfile: Dockerfile
+    command: ["zookeeper"]
+
+  kafka_west:
+    build:
+      context: ./kafka-slim
+      dockerfile: Dockerfile
+    command: ["kafka"]
+    volumes:
+      - ./kafka_west_conf/server.properties:/opt/kafka/config/server.properties
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper_west:2181
+      # - KAFKA_CREATE_TOPICS=logs:1:1
+    depends_on:
+      - zookeeper_west
+
+  producer_west:
+    build:
+      context: ./kafka-client
+      dockerfile: Dockerfile
+    deploy:
+      replicas: 1
+    environment:
+      BOOTSTRAP_SERVER: kafka_west:9092
+      TOPIC: logs
+    volumes:
+      - ./kafka-client/Producer.py:/app/Producer.py
+    depends_on:
+    - kafka_east
+
+# EU REGION
+  zookeeper_eu:
+    build:
+      context: ./kafka-slim
+      dockerfile: Dockerfile
+    command: ["zookeeper"]
+
+  kafka_eu:
+    build:
+      context: ./kafka-slim
+      dockerfile: Dockerfile
+    command: ["kafka"]
+    volumes:
+      - ./kafka_eu_conf/server.properties:/opt/kafka/config/server.properties
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper_eu:2181
+      # - KAFKA_CREATE_TOPICS=logs:1:1
+    depends_on:
+      - zookeeper_eu
