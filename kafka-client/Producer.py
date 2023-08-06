@@ -35,7 +35,8 @@ def produce(bootstrap, topic, msg_num, delay=0.01):
     i = 0
     while True:
         i += 1
-        p.produce(topic, value=(test_name), on_delivery=acked)
+        msg = f"source-cluster:{bootstrap} msg n:{i}"
+        p.produce(topic, value=(msg), on_delivery=acked)
         if i % 10 == 0:
             p.flush(10)
             print(f"Wrote total of {i} messages to {bootstrap}")

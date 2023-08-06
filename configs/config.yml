@@ -1,0 +1,11 @@
+kafka:
+  clusters:
+    -
+      name: kafka_east
+      bootstrapServers: kafka_east:9092
+    -
+      name: kafka_west
+      bootstrapServers: kafka_west:9092
+    -
+      name: kafka_eu
+      bootstrapServers: kafka_eu:9092

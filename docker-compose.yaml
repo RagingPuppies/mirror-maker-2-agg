@@ -87,3 +87,26 @@ services:
       # - KAFKA_CREATE_TOPICS=logs:1:1
     depends_on:
       - zookeeper_eu
+
+  mm2_eu:
+    build:
+      context: ./kafka-slim
+      dockerfile: Dockerfile
+    command: ["mm2"]
+    volumes:
+      - ./kafka_eu_conf/mirror-maker2.properties:/opt/kafka/config/mirror-maker2.properties
+    depends_on:
+      - zookeeper_eu
+      - kafka_eu
+
+# Tools
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - 8080:8080
+    environment:
+      DYNAMIC_CONFIG_ENABLED: 'true'
+      SPRING_CONFIG_ADDITIONAL-LOCATION: /config.yml
+    volumes:
+      - ./configs/config.yml:/config.yml
